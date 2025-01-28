@@ -3,9 +3,11 @@ import { useEffect, useState, useContext } from "react"
 import { BsCartPlus } from "react-icons/bs"
 
 import { api } from "../../services/api"
-import { CartContext } from "../../contexts/CartContext" 
+import { CartContext } from "../../contexts/CartContext"
+import toast from "react-hot-toast"
+import { Link } from "react-router-dom"
 
-export interface ProductsProps{
+export interface ProductProps{
     id: number,
     title: string,
     description: string,
@@ -15,7 +17,7 @@ export interface ProductsProps{
 
 export function Home(){
     const { addItemCart } =useContext(CartContext)
-    const [products, setProducts] = useState<ProductsProps[]>([])
+    const [products, setProducts] = useState<ProductProps[]>([])
 
     useEffect (() => {
         async function getProducts() {
@@ -26,7 +28,14 @@ export function Home(){
         getProducts();
     }, [])
 
-    function handleAddCartItem(product: ProductsProps){
+    function handleAddCartItem(product: ProductProps){
+        toast.success("Produto adicionado ao carrinho.", {
+            style:{
+                borderRadius:10,
+                backgroundColor: "#121212",
+                color: "#fff"
+            }
+        })
         addItemCart(product);
     }
 
@@ -39,12 +48,14 @@ export function Home(){
                 <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-5">
                     {products.map( (product) => (
                         <section key={product.id} className="w-full">
-                        <img
-                        className="w-full"
-                        src={product.cover}
-                        alt={product.title}
-                        />
-                        <p className="font-medium">{product.title}</p>
+                        <Link to={`/product/${product.id}`}>
+                            <img
+                                className="w-full"
+                                src={product.cover}
+                                alt={product.title}
+                            />
+                            <p className="font-medium">{product.title}</p>
+                        </Link> 
 
                         <div className="flex gap-3 items-center">
                             <strong className="text-zinc-700/90">
